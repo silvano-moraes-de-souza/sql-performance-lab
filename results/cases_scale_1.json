@@ -1,0 +1,845 @@
+{
+  "name": "cases_scale_1",
+  "created_at": "2026-10-01T14:56:45+00:00",
+  "git_sha": "3944bc6",
+  "machine": {
+    "os": "Windows 11",
+    "python": "3.11.15",
+    "cpu": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+    "cores_physical": 6,
+    "cores_logical": 12,
+    "cpu_max_mhz": 2688,
+    "ram_gb": 23.8
+  },
+  "notes": "ShopFlow scale 1: {'customers': 20000, 'products': 5000, 'orders': 100000, 'order_items': 169351, 'order_events': 291987}. EXPLAIN (ANALYZE, BUFFERS) execution time, median of 7 after 2 warm-up runs, warm cache. Parameters: {'customer': 11754, 'email': 'CAMILA.MARTINS10001@GMAIL.COM', 'order': 33334, 'month_start': '2025-06-01 00:00:00-03', 'month_end': '2025-07-01 00:00:00-03', 'day': '2025-06-15', 'offset': 50000, 'after_id': 50000}. embedded PostgreSQL 16 (pgserver), default settings.",
+  "cases": [
+    {
+      "label": "customer_history \u00b7 no index",
+      "params": {
+        "case": "customer_history",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.003659,
+        0.003899,
+        0.003591,
+        0.004488000000000001,
+        0.004128,
+        0.006799,
+        0.008586
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Sort",
+          "Seq Scan"
+        ],
+        "shared_hit": 1352,
+        "shared_read": 0,
+        "rows": 20,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.004128,
+      "min_s": 0.003591,
+      "max_s": 0.008586,
+      "stdev_s": 0.001919673310500414,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "customer_history \u00b7 index (customer_id)",
+      "params": {
+        "case": "customer_history",
+        "variant": "index (customer_id)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        9.1e-05,
+        7.7e-05,
+        6.500000000000001e-05,
+        6.7e-05,
+        6.1e-05,
+        5.9999999999999995e-05,
+        5.9e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Sort",
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan using lab_o_cust"
+        ],
+        "shared_hit": 91,
+        "shared_read": 0,
+        "rows": 20,
+        "index_bytes": 1024000,
+        "index_mb": 0.977,
+        "build_s": 0.068,
+        "same_result": true
+      },
+      "median_s": 6.500000000000001e-05,
+      "min_s": 5.9e-05,
+      "max_s": 9.1e-05,
+      "stdev_s": 1.1631238725334217e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "customer_history \u00b7 index (customer_id, ordered_at DESC)",
+      "params": {
+        "case": "customer_history",
+        "variant": "index (customer_id, ordered_at DESC)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        2.4e-05,
+        1.7e-05,
+        1.6e-05,
+        6.900000000000001e-05,
+        1.7999999999999997e-05,
+        1.7e-05,
+        1.6e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Index Scan using lab_o_cust_time"
+        ],
+        "shared_hit": 23,
+        "shared_read": 0,
+        "rows": 20,
+        "index_bytes": 4079616,
+        "index_mb": 3.891,
+        "build_s": 0.088,
+        "same_result": true
+      },
+      "median_s": 1.7e-05,
+      "min_s": 1.6e-05,
+      "max_s": 6.900000000000001e-05,
+      "stdev_s": 1.9474036439272044e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "login_email \u00b7 no index",
+      "params": {
+        "case": "login_email",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.014903000000000001,
+        0.010473000000000001,
+        0.010254,
+        0.010558,
+        0.018064,
+        0.023857,
+        0.016390000000000002
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Seq Scan"
+        ],
+        "shared_hit": 234,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.014903000000000001,
+      "min_s": 0.010254,
+      "max_s": 0.023857,
+      "stdev_s": 0.005041325978256873,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "login_email \u00b7 index (email)",
+      "params": {
+        "case": "login_email",
+        "variant": "index (email)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.021203,
+        0.021474,
+        0.019447,
+        0.016248000000000002,
+        0.022329,
+        0.024772,
+        0.019335
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Seq Scan"
+        ],
+        "shared_hit": 234,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 1032192,
+        "index_mb": 0.984,
+        "build_s": 0.077,
+        "same_result": true
+      },
+      "median_s": 0.021203,
+      "min_s": 0.016248000000000002,
+      "max_s": 0.024772,
+      "stdev_s": 0.0026876023657138107,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "login_email \u00b7 index (lower(email))",
+      "params": {
+        "case": "login_email",
+        "variant": "index (lower(email))",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        4.4e-05,
+        4.9000000000000005e-05,
+        3.5999999999999994e-05,
+        1.2e-05,
+        1.1e-05,
+        1.1e-05,
+        2e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Index Scan using lab_c_lower_email"
+        ],
+        "shared_hit": 3,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 1032192,
+        "index_mb": 0.984,
+        "build_s": 0.077,
+        "same_result": true
+      },
+      "median_s": 2e-05,
+      "min_s": 1.1e-05,
+      "max_s": 4.9000000000000005e-05,
+      "stdev_s": 1.6506852833783626e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "pending_queue \u00b7 no index",
+      "params": {
+        "case": "pending_queue",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.011917,
+        0.012995,
+        0.016034,
+        0.005497,
+        0.011172000000000001,
+        0.013474,
+        0.009863
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Sort",
+          "Seq Scan"
+        ],
+        "shared_hit": 1352,
+        "shared_read": 0,
+        "rows": 50,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.011917,
+      "min_s": 0.005497,
+      "max_s": 0.016034,
+      "stdev_s": 0.003307993392634617,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "pending_queue \u00b7 index (status, ordered_at)",
+      "params": {
+        "case": "pending_queue",
+        "variant": "index (status, ordered_at)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        5.2e-05,
+        5.4e-05,
+        5.1e-05,
+        3.2e-05,
+        4.8e-05,
+        3.2e-05,
+        3.2e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Index Scan using lab_o_status_time"
+        ],
+        "shared_hit": 54,
+        "shared_read": 0,
+        "rows": 50,
+        "index_bytes": 4972544,
+        "index_mb": 4.742,
+        "build_s": 0.198,
+        "same_result": true
+      },
+      "median_s": 4.8e-05,
+      "min_s": 3.2e-05,
+      "max_s": 5.4e-05,
+      "stdev_s": 1.044030650891055e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "pending_queue \u00b7 partial index WHERE status = 'pending'",
+      "params": {
+        "case": "pending_queue",
+        "variant": "partial index WHERE status = 'pending'",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        3.5999999999999994e-05,
+        2.7e-05,
+        2.8e-05,
+        3.1e-05,
+        2.4e-05,
+        2.4e-05,
+        2.3e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Index Scan using lab_o_pending"
+        ],
+        "shared_hit": 52,
+        "shared_read": 0,
+        "rows": 50,
+        "index_bytes": 32768,
+        "index_mb": 0.031,
+        "build_s": 0.034,
+        "same_result": true
+      },
+      "median_s": 2.7e-05,
+      "min_s": 2.3e-05,
+      "max_s": 3.5999999999999994e-05,
+      "stdev_s": 4.649628761422529e-06,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "month_revenue \u00b7 no index",
+      "params": {
+        "case": "month_revenue",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.011509,
+        0.012699,
+        0.016109000000000002,
+        0.008336,
+        0.005615,
+        0.0060149999999999995,
+        0.006053
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Aggregate",
+          "Seq Scan"
+        ],
+        "shared_hit": 1352,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.008336,
+      "min_s": 0.005615,
+      "max_s": 0.016109000000000002,
+      "stdev_s": 0.004050100322096679,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "month_revenue \u00b7 index (ordered_at)",
+      "params": {
+        "case": "month_revenue",
+        "variant": "index (ordered_at)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.0017980000000000001,
+        0.0017980000000000001,
+        0.001456,
+        0.00133,
+        0.00127,
+        0.001353,
+        0.001547
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Aggregate",
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan using lab_o_time"
+        ],
+        "shared_hit": 1305,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 2260992,
+        "index_mb": 2.156,
+        "build_s": 0.067,
+        "same_result": true
+      },
+      "median_s": 0.001456,
+      "min_s": 0.00127,
+      "max_s": 0.0017980000000000001,
+      "stdev_s": 0.00021785917251201305,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "month_revenue \u00b7 index (ordered_at) INCLUDE (status, total_cents)",
+      "params": {
+        "case": "month_revenue",
+        "variant": "index (ordered_at) INCLUDE (status, total_cents)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.000607,
+        0.0005949999999999999,
+        0.000587,
+        0.0006590000000000001,
+        0.000865,
+        0.001883,
+        0.001933
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Aggregate",
+          "Index Only Scan using lab_o_time_cover"
+        ],
+        "shared_hit": 30,
+        "shared_read": 0,
+        "rows": 1,
+        "index_bytes": 4964352,
+        "index_mb": 4.734,
+        "build_s": 0.076,
+        "same_result": true
+      },
+      "median_s": 0.0006590000000000001,
+      "min_s": 0.000587,
+      "max_s": 0.001933,
+      "stdev_s": 0.000615270904329374,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "event_log_day \u00b7 no index",
+      "params": {
+        "case": "event_log_day",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.022306,
+        0.023121,
+        0.02244,
+        0.022353,
+        0.022944,
+        0.023611,
+        0.023252
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Aggregate",
+          "Gather Merge",
+          "Aggregate",
+          "Sort",
+          "Seq Scan"
+        ],
+        "shared_hit": 2287,
+        "shared_read": 0,
+        "rows": 4,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.022944,
+      "min_s": 0.022306,
+      "max_s": 0.023611,
+      "stdev_s": 0.0005055030497764901,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "event_log_day \u00b7 B-tree (event_at)",
+      "params": {
+        "case": "event_log_day",
+        "variant": "B-tree (event_at)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.00010499999999999999,
+        0.0001,
+        9.7e-05,
+        9.7e-05,
+        9.7e-05,
+        9.800000000000001e-05,
+        9.7e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Sort",
+          "Aggregate",
+          "Index Scan using lab_e_btree"
+        ],
+        "shared_hit": 8,
+        "shared_read": 0,
+        "rows": 4,
+        "index_bytes": 6578176,
+        "index_mb": 6.273,
+        "build_s": 0.112,
+        "same_result": true
+      },
+      "median_s": 9.7e-05,
+      "min_s": 9.7e-05,
+      "max_s": 0.00010499999999999999,
+      "stdev_s": 2.9840847683606253e-06,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "event_log_day \u00b7 BRIN (event_at)",
+      "params": {
+        "case": "event_log_day",
+        "variant": "BRIN (event_at)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.000994,
+        0.001012,
+        0.001016,
+        0.001192,
+        0.0010220000000000001,
+        0.0015869999999999999,
+        0.001188
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Aggregate",
+          "Sort",
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan using lab_e_brin"
+        ],
+        "shared_hit": 130,
+        "shared_read": 0,
+        "rows": 4,
+        "index_bytes": 24576,
+        "index_mb": 0.023,
+        "build_s": 0.047,
+        "same_result": true
+      },
+      "median_s": 0.0010220000000000001,
+      "min_s": 0.000994,
+      "max_s": 0.0015869999999999999,
+      "stdev_s": 0.00021279086536069247,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "deep_pagination \u00b7 OFFSET",
+      "params": {
+        "case": "deep_pagination",
+        "variant": "OFFSET",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.017291,
+        0.019447,
+        0.008125,
+        0.006921,
+        0.00797,
+        0.014109,
+        0.021161000000000003
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Index Scan using orders_pkey"
+        ],
+        "shared_hit": 813,
+        "shared_read": 0,
+        "rows": 50,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.014109,
+      "min_s": 0.006921,
+      "max_s": 0.021161000000000003,
+      "stdev_s": 0.00593739326721111,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "deep_pagination \u00b7 keyset (order_id > last seen)",
+      "params": {
+        "case": "deep_pagination",
+        "variant": "keyset (order_id > last seen)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        2.4e-05,
+        6.4e-05,
+        5.4e-05,
+        5.8e-05,
+        5.7e-05,
+        7.099999999999999e-05,
+        9.1e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Limit",
+          "Index Scan using orders_pkey"
+        ],
+        "shared_hit": 4,
+        "shared_read": 0,
+        "rows": 50,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 5.8e-05,
+      "min_s": 2.4e-05,
+      "max_s": 9.1e-05,
+      "stdev_s": 2.0177781274036476e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "function_on_column \u00b7 date(ordered_at) = day",
+      "params": {
+        "case": "function_on_column",
+        "variant": "date(ordered_at) = day",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.008388999999999999,
+        0.011146000000000001,
+        0.008154,
+        0.009314,
+        0.006525,
+        0.006325,
+        0.007422
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Sort",
+          "Seq Scan"
+        ],
+        "shared_hit": 1352,
+        "shared_read": 0,
+        "rows": 129,
+        "index_bytes": 2260992,
+        "index_mb": 2.156,
+        "build_s": 0.099,
+        "same_result": true
+      },
+      "median_s": 0.008154,
+      "min_s": 0.006325,
+      "max_s": 0.011146000000000001,
+      "stdev_s": 0.0016774013064431374,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "function_on_column \u00b7 ordered_at in [day, day + 1)",
+      "params": {
+        "case": "function_on_column",
+        "variant": "ordered_at in [day, day + 1)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.000147,
+        0.000115,
+        9.2e-05,
+        9.2e-05,
+        8.8e-05,
+        0.000158,
+        0.00013800000000000002
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Sort",
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan using lab_o_time2"
+        ],
+        "shared_hit": 128,
+        "shared_read": 0,
+        "rows": 129,
+        "index_bytes": 2260992,
+        "index_mb": 2.156,
+        "build_s": 0.072,
+        "same_result": true
+      },
+      "median_s": 0.000115,
+      "min_s": 8.8e-05,
+      "max_s": 0.000158,
+      "stdev_s": 2.915394280285912e-05,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "items_of_order \u00b7 no index",
+      "params": {
+        "case": "items_of_order",
+        "variant": "no index",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        0.007911,
+        0.007134000000000001,
+        0.006876,
+        0.007524,
+        0.007941,
+        0.006679,
+        0.006734
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Sort",
+          "Seq Scan"
+        ],
+        "shared_hit": 1616,
+        "shared_read": 0,
+        "rows": 2,
+        "index_bytes": 0,
+        "index_mb": 0.0,
+        "build_s": 0.0,
+        "same_result": true
+      },
+      "median_s": 0.007134000000000001,
+      "min_s": 0.006679,
+      "max_s": 0.007941,
+      "stdev_s": 0.0005377056195850413,
+      "median_peak_rss_mb": 0.0
+    },
+    {
+      "label": "items_of_order \u00b7 index (order_id)",
+      "params": {
+        "case": "items_of_order",
+        "variant": "index (order_id)",
+        "scale": 1
+      },
+      "runs": 7,
+      "wall_s": [
+        1.6e-05,
+        1.4e-05,
+        1.2e-05,
+        1.2e-05,
+        1.2e-05,
+        1.2e-05,
+        1.1e-05
+      ],
+      "peak_rss_mb": [
+        0.0
+      ],
+      "extra": {
+        "plan": [
+          "Sort",
+          "Index Scan using lab_i_order"
+        ],
+        "shared_hit": 4,
+        "shared_read": 0,
+        "rows": 2,
+        "index_bytes": 3309568,
+        "index_mb": 3.156,
+        "build_s": 0.074,
+        "same_result": true
+      },
+      "median_s": 1.2e-05,
+      "min_s": 1.1e-05,
+      "max_s": 1.6e-05,
+      "stdev_s": 1.704336206492693e-06,
+      "median_peak_rss_mb": 0.0
+    }
+  ]
+}
