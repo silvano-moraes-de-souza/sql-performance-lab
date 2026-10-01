@@ -48,7 +48,7 @@ def run_scale(url: str, scale: float, where: str) -> tuple[Path, list, dict]:
                               len(v.exec_ms), [ms / 1000 for ms in v.exec_ms], [0.0],
                               {"plan": v.plan_nodes, "shared_hit": v.shared_hit,
                                "shared_read": v.shared_read, "rows": v.rows,
-                               "index_mb": round(v.index_mb, 2), "build_s": round(v.build_s, 3),
+                               "index_bytes": v.index_bytes, "index_mb": round(v.index_mb, 3), "build_s": round(v.build_s, 3),
                                "same_result": v.same_result}))  # fmt: skip
         print(
             f"scale {scale} {r.key}: {r.variants[0].median_ms:.1f} ms -> "

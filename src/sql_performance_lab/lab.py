@@ -29,9 +29,13 @@ class Measured:
     shared_hit: int
     shared_read: int
     rows: int
-    index_mb: float = 0.0
+    index_bytes: int = 0
     build_s: float = 0.0
     same_result: bool = True
+
+    @property
+    def index_mb(self) -> float:
+        return self.index_bytes / 2**20
 
     @property
     def median_ms(self) -> float:
@@ -76,14 +80,14 @@ def run_case(conn: psycopg.Connection, case: Case, runs: int = 5) -> CaseResult:
     baseline = None
     for v in case.variants:
         _drop(conn, case)
-        size, build = 0.0, 0.0
+        size, build = 0, 0.0
         for ddl in v.ddl:
             t0 = time.perf_counter()
             conn.execute(ddl)
             conn.commit()
             build += time.perf_counter() - t0
             name = ddl.split()[2]
-            size += conn.execute(f"SELECT pg_relation_size('shop.{name}')").fetchone()[0] / 2**20
+            size += conn.execute(f"SELECT pg_relation_size('shop.{name}')").fetchone()[0]
         conn.execute(f"ANALYZE shop.{case.table}")
         conn.commit()
         for _ in range(2):

@@ -66,8 +66,8 @@ def cases(p: dict) -> list[Case]:
         Case(
             "customer_history",
             "Last 20 orders of one customer",
-            "A composite index matches both the filter and the sort, so Postgres reads 20 "
-            "index entries instead of sorting a million rows.",
+            "Any index on customer_id removes the scan of a million rows. Whether the "
+            "composite one also removes the sort depends on how many orders a customer has.",
             "orders",
             [
                 Variant(
@@ -173,8 +173,8 @@ def cases(p: dict) -> list[Case]:
         Case(
             "event_log_day",
             "Events of one day in an append-only log",
-            "On a table written in time order, a BRIN index is a few pages and still skips "
-            "almost everything; a B-tree is fast too but hundreds of times bigger.",
+            "On a table written in time order, a BRIN index of a few kilobytes skips almost "
+            "every block; a B-tree is a little faster and thousands of times bigger.",
             "order_events",
             [
                 Variant(

@@ -517,11 +517,31 @@ def scene_lakehouse(a: str) -> str:
     return "".join(out)
 
 
+def scene_explain(a: str) -> str:
+    """Two query plans racing: a sequential scan crawls, an index scan finishes at once."""
+    out = ['<rect x="850" y="44" width="380" height="272" rx="12" fill="#0d1117" stroke="#2a3542"/>',
+           '<text x="870" y="74" class="mono" font-size="12" fill="#8b949e">EXPLAIN (ANALYZE, BUFFERS)</text>']  # fmt: skip
+    plans = [("as written", "Sort", "Seq Scan on orders", "#f85149", 104, "8s"),
+             ("with the fix", "Limit", "Index Scan using orders_cust_time", "#3fb950", 204, "0.8s")]  # fmt: skip
+    for label, top, scan, color, y, dur in plans:
+        out.append(f'<text x="870" y="{y}" class="sans" font-size="13" font-weight="700" fill="{color}">{label}</text>'
+                   f'<text x="880" y="{y + 22}" class="mono" font-size="12" fill="#e6edf3">-&gt; {top}</text>'
+                   f'<text x="896" y="{y + 42}" class="mono" font-size="12" fill="#c9d1d9">-&gt; {scan}</text>'
+                   f'<rect x="870" y="{y + 54}" width="340" height="8" rx="4" fill="#1b2029"/>'
+                   f'<rect x="870" y="{y + 54}" width="340" height="8" rx="4" fill="{color}">'
+                   f'<animate attributeName="width" values="0;340;340" keyTimes="0;0.9;1" dur="{dur}" '
+                   f'repeatCount="indefinite"/></rect>')  # fmt: skip
+    out.append(f'<g class="fade d6"><rect x="1100" y="56" width="110" height="26" rx="13" fill="{a}" '
+               'fill-opacity=".15" stroke="' + a + '"/><text x="1155" y="74" text-anchor="middle" '
+               f'class="mono" font-size="12" font-weight="700" fill="{a}">same rows</text></g>')  # fmt: skip
+    return "".join(out)
+
+
 SCENES = {
     "flow": scene_flow, "dashboard": scene_dashboard, "route": scene_route,
     "resume": scene_resume, "workflow": scene_workflow, "bi": scene_bi, "video": scene_video,
     "site": scene_site, "rows": scene_rows, "star": scene_star, "checks": scene_checks,
-    "terminal": scene_terminal, "days": scene_days, "cdc": scene_cdc, "lakehouse": scene_lakehouse,
+    "terminal": scene_terminal, "days": scene_days, "cdc": scene_cdc, "lakehouse": scene_lakehouse, "explain": scene_explain,
 }  # fmt: skip
 
 
